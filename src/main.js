@@ -1,6 +1,8 @@
 import './styles.css';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile, toBlobURL } from '@ffmpeg/util';
+import { fetchFile } from '@ffmpeg/util';
+import ffmpegCoreURL from '@ffmpeg/core?url';
+import ffmpegWasmURL from '@ffmpeg/core/wasm?url';
 import JSZip from 'jszip';
 
 const $ = (s, r=document) => r.querySelector(s);
@@ -97,7 +99,7 @@ function stop(){state.playing=false;cancelAnimationFrame(state.raf);els.video.pa
 
 function setProgress(n,text){n=clamp(Math.round(n),0,100);els.renderProgress.classList.remove('hidden');els.renderBar.style.width=`${n}%`;els.renderPct.textContent=`${n}%`;els.renderText.textContent=text}
 function phase(start,span,text){progressPhase={start,span};setProgress(start,text)}
-async function engine(){if(ffReady)return ff;if(ffLoading)return ffLoading;ffLoading=(async()=>{phase(2,4,'Cargando FFmpeg/WASM…');ff=new FFmpeg();ff.on('progress',({progress})=>{if(Number.isFinite(progress))setProgress(progressPhase.start+clamp(progress,0,1)*progressPhase.span,els.renderText.textContent)});const base='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm';await ff.load({coreURL:await toBlobURL(`${base}/ffmpeg-core.js`,'text/javascript'),wasmURL:await toBlobURL(`${base}/ffmpeg-core.wasm`,'application/wasm')});ffReady=true;return ff})();try{return await ffLoading}finally{ffLoading=null}}
+async function engine(){if(ffReady)return ff;if(ffLoading)return ffLoading;ffLoading=(async()=>{phase(2,4,'Cargando motor de video…');ff=new FFmpeg();ff.on('progress',({progress})=>{if(Number.isFinite(progress))setProgress(progressPhase.start+clamp(progress,0,1)*progressPhase.span,els.renderText.textContent)});ff.on('log',({message})=>{if(/error|invalid|failed/i.test(message))console.warn('[ffmpeg]',message)});await ff.load({coreURL:ffmpegCoreURL,wasmURL:ffmpegWasmURL});ffReady=true;return ff})();try{return await ffLoading}catch(e){ffReady=false;ff=null;throw new Error(`No se pudo iniciar FFmpeg/WASM: ${e?.message||e}`)}finally{ffLoading=null}}
 async function hasAudio(name){const lines=[],h=({message})=>lines.push(message);ff.on('log',h);try{await ff.exec(['-i',name])}catch{}ff.off?.('log',h);return lines.some(x=>/Audio:\s/i.test(x))}
 async function pngFor(o,w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.globalAlpha=o.opacity;if(o.type==='solid'){x.fillStyle=o.color;x.fillRect(0,0,w,h)}else if(o.type==='text'){x.fillStyle=o.color;x.font=`700 ${o.fontSize}px Arial,sans-serif`;x.textAlign='center';x.textBaseline='middle';x.fillText(o.text,w*o.x/100,h*o.y/100,w*.92)}else{x.fillStyle=o.color;const ww=w*o.width/100,hh=h*o.height/100,cx=w*o.x/100,cy=h*o.y/100;if(o.shape==='circle'){x.beginPath();x.ellipse(cx,cy,ww/2,hh/2,0,0,Math.PI*2);x.fill()}else x.fillRect(cx-ww/2,cy-hh/2,ww,hh)}const b=await new Promise(r=>c.toBlob(r,'image/png'));return new Uint8Array(await b.arrayBuffer())}
 async function del(n){try{await ff.deleteFile(n)}catch{}}
