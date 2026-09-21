@@ -13,10 +13,21 @@ let ff=null,ffReady=false,ffLoading=null,progressPhase={start:0,span:1};
 
 $('#app').innerHTML=`
 <div class="shell">
-<header class="topbar"><div class="brand"><b>E</b><div><strong>Export to Video</strong><span>mini editor + conversor local</span></div></div><div class="actions"><button id="clearBtn" class="ghost">Nuevo</button><button id="exportBtn" class="primary">Exportar</button></div></header>
+<header class="topbar"><div class="brand"><b>E</b><div><strong>Export to Video</strong><span>Editor local</span></div></div><div class="project-title"><strong>Proyecto sin título</strong><span>Guardado local durante esta sesión</span></div><div class="actions"><button id="clearBtn" class="ghost">Nuevo</button><button id="exportBtn" class="primary">Exportar</button></div></header>
+<nav class="editor-tools" aria-label="Herramientas">
+  <button id="mediaTool" class="tool active"><i>▣</i><span>Medios</span></button>
+  <button class="tool" data-add="text"><i>T</i><span>Texto</span></button>
+  <button class="tool" data-add="shape"><i>◇</i><span>Formas</span></button>
+  <button class="tool" data-add="solid"><i>■</i><span>Color</span></button>
+  <button id="transitionTool" class="tool"><i>⋈</i><span>Transiciones</span></button>
+  <button class="tool" disabled title="Próximamente"><i>♫</i><span>Audio</span></button>
+  <button class="tool" disabled title="Próximamente"><i>✦</i><span>Efectos</span></button>
+  <div class="tool-spacer"></div>
+  <span class="local-badge">Procesamiento local</span>
+</nav>
 <main class="workspace">
 <aside class="panel media">
-  <div class="heading"><div><small>MEDIOS</small><h2>Proyecto</h2></div><button id="addBtn" class="round">+</button></div>
+  <div class="heading"><div><small>ARCHIVOS MULTIMEDIA</small><h2>Medios</h2></div><button id="addBtn" class="round" title="Importar archivos">+</button></div>
   <input id="files" hidden type="file" multiple accept="video/*,image/gif,.mkv,.avi,.mov,.webm,.mp4,.m4v,.mpeg,.mpg,.flv,.wmv,.ts,.mts,.m2ts,.3gp,.ogv,.vob">
   <div class="drop" id="drop"><i>↓</i><strong>Suelta videos aquí</strong><span>MP4 · MOV · WebM · MKV · AVI · GIF</span></div>
   <div class="loading hidden" id="loading"><div><span id="loadText">Leyendo…</span><b id="loadPct">0%</b></div><i><em id="loadBar"></em></i></div>
@@ -27,7 +38,7 @@ $('#app').innerHTML=`
   <div class="panel transport"><span id="duration">00:00.0</span><div><button id="start">|‹</button><button id="play">▶</button><button id="end">›|</button></div><b id="time">00:00.0</b></div>
   <div class="panel preview"><div id="empty" class="empty"><i>＋</i><strong>Agrega un video para empezar</strong><span>Todo se procesa dentro del navegador.</span></div><div id="screen" class="screen hidden"><div id="sourceA" class="preview-source"><video id="video" playsinline muted></video><img id="gif" class="hidden"></div><div id="sourceB" class="preview-source hidden"><video id="videoB" playsinline muted></video><img id="gifB" class="hidden"></div><div id="layerPreview"></div></div><small id="previewMsg"></small></div>
   <div class="panel timeline">
-    <div class="timeline-head"><div><small>TIMELINE</small><strong id="clipCount">Sin clips</strong></div><label>Zoom <input id="zoom" type="range" min="70" max="180" value="100"></label></div>
+    <div class="timeline-head"><div class="timeline-left"><small>LÍNEA DE TIEMPO</small><strong id="clipCount">Sin clips</strong><span class="scrub-hint">Arrastra la barra blanca para desplazarte</span></div><label>Zoom <input id="zoom" type="range" min="70" max="220" value="100"></label></div>
     <div id="timelineScroll" class="timeline-scroll"><div id="timelineInner" class="timeline-inner">
       <div id="ruler" class="ruler"></div>
       <div class="track"><b>V1<span>Video</span></b><div id="videoTrack"></div></div>
