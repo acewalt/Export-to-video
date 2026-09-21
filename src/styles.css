@@ -12,3 +12,5 @@
 .dragging-item{opacity:.35}
 
 .pv-text,.pv-shape{cursor:move}.selected-layer{outline:1px dashed #fff9;outline-offset:4px}
+
+.layer-item{cursor:grab;user-select:none}.layer-item:active{cursor:grabbing}.layer-edge{position:absolute;top:0;bottom:0;width:8px;z-index:7;cursor:ew-resize}.layer-left{left:0}.layer-right{right:0}.layer-item:hover .layer-edge,.layer-item.selected .layer-edge{background:#ffffff18}.layer-item:hover .layer-left,.layer-item.selected .layer-left{border-left:2px solid #dfe5ec}.layer-item:hover .layer-right,.layer-item.selected .layer-right{border-right:2px solid #dfe5ec}
