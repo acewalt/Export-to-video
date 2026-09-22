@@ -515,3 +515,28 @@ body.is-scrubbing,body.is-scrubbing *{cursor:ew-resize!important;user-select:non
   text-shadow:1px 0 #00ff99,-1px 0 #9933ff
 }
 .giphy-credit:hover{border-color:#5b6970;background:#12191c}
+
+
+.giphy-browser-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px
+}
+.giphy-mode-tabs,.giphy-type-tabs{
+  display:flex;gap:3px;padding:2px;border:1px solid #263136;border-radius:5px;background:#0b1012
+}
+.giphy-mode-tabs button,.giphy-type-tabs button{
+  padding:6px 8px;border:0;border-radius:3px;background:transparent;color:#728086;font-size:8px
+}
+.giphy-mode-tabs button.active,.giphy-type-tabs button.active{
+  background:#1a272a;color:var(--accent)
+}
+.giphy-meta>span{color:#96a1a5;font-size:8px;font-weight:600}
+.giphy-empty{
+  grid-column:1/-1;min-height:180px;padding:24px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;border:1px dashed #273237;border-radius:5px
+}
+.giphy-empty strong{font-size:10px}.giphy-empty span{max-width:260px;margin-top:5px;color:#617076;font-size:8px;line-height:1.5}
+.giphy-more{
+  grid-column:1/-1;padding:9px;border:1px solid #2b383d;border-radius:4px;background:#151d20;
+  color:#aab4b7;font-size:8px
+}
+.giphy-more:hover{border-color:var(--accent);color:var(--accent)}
