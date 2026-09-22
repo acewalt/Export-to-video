@@ -478,3 +478,23 @@ body.is-scrubbing,body.is-scrubbing *{cursor:ew-resize!important;user-select:non
   position:absolute;transform:translate(-50%,-50%);height:auto;object-fit:contain;cursor:move;
   user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 2px 8px #0005)
 }
+
+
+.shape-library{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.shape-library button{
+  aspect-ratio:1.05;padding:8px;border:1px solid #2d363a;border-radius:5px;background:#171c1f;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px
+}
+.shape-library button:hover{border-color:var(--accent);background:#1b2427}
+.shape-library button span{font-size:7px;color:#aab3b6}
+.shape-icon{display:block;width:36px;height:30px;border:2px solid #d9dfe1;background:transparent}
+.shape-icon.circle{border-radius:50%}
+.shape-icon.triangle{border:0;background:#d9dfe1;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.shape-icon.diamond{border:0;background:#d9dfe1;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.shape-icon.line{height:2px;border:0;background:#d9dfe1;margin-block:14px}
+.shape-icon.arrow{border:0;background:#d9dfe1;clip-path:polygon(0 40%,72% 40%,72% 18%,100% 50%,72% 82%,72% 60%,0 60%)}
+
+.pv-shape.triangle{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.pv-shape.diamond{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.pv-shape.arrow{clip-path:polygon(0 32%,68% 32%,68% 0,100% 50%,68% 100%,68% 68%,0 68%)}
+.pv-shape.line{border-radius:999px}
