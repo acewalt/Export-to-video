@@ -27,6 +27,8 @@ jobs:
       - name: Install
         run: npm install
       - name: Build
+        env:
+          VITE_GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
         run: npm run build
       - name: Configure Pages
         uses: actions/configure-pages@v5
