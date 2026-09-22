@@ -251,8 +251,8 @@ button:disabled{cursor:not-allowed;opacity:.35}
   background:linear-gradient(180deg,#275c42,#1e4935);border-color:#39785a;color:#cfe8d9
 }
 .audio-item .audio-wave{
-  position:absolute;inset:4px;opacity:.45;pointer-events:none;
-  background:repeating-linear-gradient(90deg,transparent 0 3px,#84d8a7 3px 4px,transparent 4px 6px)
+  position:absolute;left:4px;right:4px;top:3px;bottom:3px;width:calc(100% - 8px);height:calc(100% - 6px);
+  opacity:.82;pointer-events:none
 }
 .audio-item>span:last-child{position:relative;z-index:2;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .overlay-track-row{background:#101316}
@@ -263,7 +263,7 @@ button:disabled{cursor:not-allowed;opacity:.35}
   display:flex;align-items:center;gap:6px;overflow:hidden;cursor:default
 }
 .timeline-item:hover{border-color:#4a616a}.timeline-item.selected{border-color:var(--accent);box-shadow:inset 0 0 0 1px #35d7d244}
-.video-item{user-select:none;background:linear-gradient(180deg,#15545a,#103c41);border-color:#21656a}
+.video-item{user-select:none;overflow:visible;background:linear-gradient(180deg,#15545a,#103c41);border-color:#21656a}
 .timeline-item>b{
   min-width:18px;height:18px;display:grid;place-items:center;border-radius:3px;background:#0b1619;
   font-size:7px;color:#b9dddc
@@ -485,6 +485,7 @@ body.is-scrubbing,body.is-scrubbing *{cursor:ew-resize!important;user-select:non
   height:26px;padding:0 7px;border:1px solid transparent;border-radius:4px;background:transparent;color:#9da8ac;font-size:8px
 }
 .timeline-tools button:hover{background:#182024;border-color:#29343a;color:#e3e8e9}
+.timeline-tools button.active{background:#17383b;border-color:#2d6266;color:var(--accent)}
 .timeline-tools button span{margin-left:3px}
 .timeline-tools>b{
   margin-left:3px;padding:4px 7px;border-radius:3px;background:#101719;color:#708086;font:600 7px ui-monospace,monospace;white-space:nowrap
@@ -501,13 +502,14 @@ body.is-scrubbing,body.is-scrubbing *{cursor:ew-resize!important;user-select:non
 }
 .range-in{background:#67e1dc}.range-out{background:#f1d06a}
 .transition-slot{
-  position:absolute;right:-10px;top:50%;z-index:20;transform:translateY(-50%);
-  width:20px!important;height:20px!important;display:grid!important;place-items:center!important;
-  border-radius:4px;background:#111719;border:1px solid #405057;color:#78878d;font-size:10px!important;
-  overflow:visible!important
+  position:absolute;right:-15px;top:-9px;z-index:40;
+  width:30px!important;height:18px!important;display:grid!important;place-items:center!important;
+  border-radius:5px;background:#12191c;border:1px solid #607279;color:#b8c4c8;font-size:11px!important;
+  box-shadow:0 2px 8px #0009;overflow:visible!important;cursor:pointer
 }
-.transition-slot.active{background:#254448;border-color:var(--accent);color:var(--accent)}
-.transition-slot.drop-ready{transform:translateY(-50%) scale(1.25);background:var(--accent);color:#071112;border-color:var(--accent)}
+.transition-slot:before{content:"";position:absolute;left:50%;top:100%;width:1px;height:8px;background:#607279}
+.transition-slot.active{background:#26565a;border-color:var(--accent);color:#dffffd}
+.transition-slot.drop-ready{transform:scale(1.14);background:var(--accent);color:#071112;border-color:var(--accent)}
 
 @media(max-width:1250px){
   .timeline-tools button span{display:none}
@@ -710,3 +712,11 @@ body.resize-row,body.resize-row *{cursor:row-resize!important}
 .media-timeline-item.moving-item{opacity:.55;outline:1px solid var(--accent);outline-offset:1px}
 .track.drag-target>div:not(.track-head){background:#35d7d20a}
 .vertical-resolution-check{margin-top:6px!important;padding:8px 10px!important;border:1px solid #383f42;border-radius:4px;background:#1d2021}
+
+
+#mediaPreviewLayers{position:absolute;inset:0;overflow:hidden;z-index:1}
+#mediaPreviewLayers .preview-source{position:absolute;inset:0;background:transparent;pointer-events:none}
+#mediaPreviewLayers video,#mediaPreviewLayers img{pointer-events:auto;cursor:move}
+#trackRows{position:relative;width:100%}
+.media-card.dragging{opacity:.45;outline:1px solid var(--accent)}
+.track.drag-target .track-lane{background:#35d7d210;box-shadow:inset 0 0 0 1px #35d7d255}
