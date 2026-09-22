@@ -498,3 +498,20 @@ body.is-scrubbing,body.is-scrubbing *{cursor:ew-resize!important;user-select:non
 .pv-shape.diamond{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
 .pv-shape.arrow{clip-path:polygon(0 32%,68% 32%,68% 0,100% 50%,68% 100%,68% 68%,0 68%)}
 .pv-shape.line{border-radius:999px}
+
+
+.giphy-meta{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-1px 0 10px
+}
+.giphy-meta .giphy-help{margin:0}
+.giphy-credit{
+  display:inline-flex;align-items:center;gap:5px;flex:none;padding:5px 7px;
+  border:1px solid #303a3e;border-radius:4px;background:#0c1113;
+  color:#a9b3b7;text-decoration:none;font-size:7px;line-height:1
+}
+.giphy-credit span{color:#6f7c81}
+.giphy-credit strong{
+  color:#fff;font-size:9px;letter-spacing:.03em;
+  text-shadow:1px 0 #00ff99,-1px 0 #9933ff
+}
+.giphy-credit:hover{border-color:#5b6970;background:#12191c}
