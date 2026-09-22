@@ -473,3 +473,8 @@ body.is-scrubbing,body.is-scrubbing *{cursor:ew-resize!important;user-select:non
   .timeline-tools>b{display:none}
   .giphy-results{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
+
+.pv-gif{
+  position:absolute;transform:translate(-50%,-50%);height:auto;object-fit:contain;cursor:move;
+  user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 2px 8px #0005)
+}
