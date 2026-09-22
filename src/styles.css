@@ -739,3 +739,5 @@ body.resize-row,body.resize-row *{cursor:row-resize!important}
 .compact-add-layer button{height:36px!important;padding:4px 3px!important;font-size:10px!important}
 .compact-add-layer small{display:inline!important;margin:0 0 0 5px!important;font-size:7px!important}
 .pv-shape{overflow:visible;background:transparent!important}
+
+.shape-library .shape-icon.circle{width:30px;height:30px}
