@@ -720,3 +720,22 @@ body.resize-row,body.resize-row *{cursor:row-resize!important}
 #trackRows{position:relative;width:100%}
 .media-card.dragging{opacity:.45;outline:1px solid var(--accent)}
 .track.drag-target .track-lane{background:#35d7d210;box-shadow:inset 0 0 0 1px #35d7d255}
+
+
+/* Expanded shape library */
+.shape-icon.rounded{border-radius:8px}
+.shape-icon.ellipse{border-radius:50%;height:22px}
+.shape-icon.pentagon{border:0;background:#d9dfe1;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)}
+.shape-icon.hexagon{border:0;background:#d9dfe1;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
+.shape-icon.star{border:0;background:#d9dfe1;clip-path:polygon(50% 0,61% 36%,100% 36%,68% 58%,80% 100%,50% 73%,20% 100%,32% 58%,0 36%,39% 36%)}
+.shape-icon.heart,.shape-icon.plus,.shape-icon.cross,.shape-icon.chevron{
+  border:0;background:transparent;color:#d9dfe1;font-style:normal;font-weight:800;
+  display:grid;place-items:center;font-size:32px;line-height:1
+}
+.shape-icon.chevron{font-size:46px;font-weight:400}
+.compact-add-layer{
+  padding-top:5px!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:3px!important
+}
+.compact-add-layer button{height:36px!important;padding:4px 3px!important;font-size:10px!important}
+.compact-add-layer small{display:inline!important;margin:0 0 0 5px!important;font-size:7px!important}
+.pv-shape{overflow:visible;background:transparent!important}
