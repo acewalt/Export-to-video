@@ -70,7 +70,7 @@ $('#app').innerHTML=`
     <div id="giphySearchRow" class="giphy-search hidden"><input id="giphyQuery" placeholder="Buscar en GIPHY"><button id="giphySearch">Buscar</button></div>
     <div id="giphyKeySetup" class="giphy-key-setup">
       <div class="giphy-key-row"><input id="giphyKey" type="password" placeholder="GIPHY API key"><button id="saveGiphyKey">Guardar</button></div>
-      <small class="giphy-help">Añade tu clave gratuita una vez. Se guarda solo en este navegador.</small>
+      <small class="giphy-help">Añade tu clave gratuita una vez. Se guarda solo en este navegador. <a href="https://developers.giphy.com/dashboard/" target="_blank" rel="noopener noreferrer">Obtener API key gratis ↗</a></small>
     </div>
     <div class="giphy-meta">
       <span id="giphySectionTitle">Tendencias · GIFs</span>
