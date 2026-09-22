@@ -11,7 +11,7 @@ const fmt=s=>{s=Math.max(0,Number(s)||0);return `${String(Math.floor(s/60)).padS
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=p=>`${p}_${crypto.randomUUID().slice(0,8)}`;
 const GIPHY_BUILTIN_KEY=(import.meta.env.VITE_GIPHY_API_KEY||'').trim();
-const state={clips:[],layers:[],selected:null,time:0,playing:false,raf:0,started:0,width:1920,height:1080,fps:30,format:'mp4',quality:23,busy:false,dragClipId:null,proxyBusy:new Set(),rangeIn:0,rangeOut:null,mediaView:'media',giphyQuery:'',giphyBusy:false,giphyMode:'trending',giphyType:'gifs',giphyOffset:0,giphyHasMore:true};
+const state={clips:[],layers:[],selected:null,time:0,playing:false,raf:0,started:0,width:1920,height:1080,fps:30,timelineAuto:true,mismatchMode:'fit',trackHeight:'normal',trackStates:{v1:{locked:false,visible:true},v2:{locked:false,visible:true},a1:{locked:false,muted:false,solo:false}},format:'mp4',quality:23,exportResolution:'timeline',exportFps:null,busy:false,dragClipId:null,proxyBusy:new Set(),rangeIn:0,rangeOut:null,mediaView:'media',giphyQuery:'',giphyBusy:false,giphyMode:'trending',giphyType:'gifs',giphyOffset:0,giphyHasMore:true};
 let ff=null,ffReady=false,ffLoading=null,progressPhase={start:0,span:1};
 
 $('#app').innerHTML=`
@@ -87,7 +87,7 @@ $('#app').innerHTML=`
   <div class="panel preview"><div id="empty" class="empty"><i>＋</i><strong>Agrega un video para empezar</strong><span>Todo se procesa dentro del navegador.</span></div><div id="screen" class="screen hidden"><div id="sourceA" class="preview-source"><video id="video" playsinline muted></video><img id="gif" class="hidden"></div><div id="sourceB" class="preview-source hidden"><video id="videoB" playsinline muted></video><img id="gifB" class="hidden"></div><div id="layerPreview"></div><div id="transformBox" class="transform-box hidden"><i class="transform-corner tl" data-free-transform="scale"></i><i class="transform-corner tr" data-free-transform="scale"></i><i class="transform-corner bl" data-free-transform="scale"></i><i class="transform-corner br" data-free-transform="scale"></i><i class="transform-rotate-line"></i><button data-free-transform="rotate" class="transform-rotate" title="Rotar">↻</button></div></div><small id="previewMsg"></small></div>
   <div class="panel timeline">
     <div class="timeline-head">
-      <div class="timeline-left"><small>LÍNEA DE TIEMPO</small><strong id="clipCount">Sin clips</strong></div>
+      <div class="timeline-left"><small>LÍNEA DE TIEMPO</small><strong id="clipCount">Sin clips</strong><button id="timelineSettingsBtn" class="timeline-settings-btn" title="Ajustes de Timeline">⚙ Timeline</button></div>
       <div class="timeline-tools">
         <button id="splitBtn" title="Dividir en el cabezal (Ctrl/Cmd+B)">✂ <span>Dividir</span></button>
         <button id="markInBtn" title="Marcar entrada (I)">I <span>Entrada</span></button>
@@ -95,16 +95,16 @@ $('#app').innerHTML=`
         <button id="clearRangeBtn" title="Limpiar rango">× <span>Rango</span></button>
         <b id="rangeLabel">Todo</b>
       </div>
-      <div class="timeline-zoom"><button id="zoomOut" title="Alejar">−</button><input id="zoom" type="range" min="20" max="800" step="10" value="100"><button id="zoomIn" title="Acercar">＋</button><button id="zoomFit" title="Ver todo">↔</button><span id="zoomValue">100%</span></div>
+      <div class="track-density"><select id="trackHeightMode" title="Altura de pistas"><option value="compact">Compacta</option><option value="normal" selected>Normal</option><option value="large">Grande</option></select></div><div class="timeline-zoom"><button id="zoomOut" title="Alejar">−</button><input id="zoom" type="range" min="20" max="800" step="10" value="100"><button id="zoomIn" title="Acercar">＋</button><button id="zoomFit" title="Ver todo">↔</button><span id="zoomValue">100%</span></div>
     </div>
     <div id="timelineScroll" class="timeline-scroll"><div id="timelineInner" class="timeline-inner">
       <div id="ruler" class="ruler"></div>
       <div id="rangeShade" class="range-shade hidden"></div>
       <i id="rangeInMarker" class="range-marker range-in hidden">I</i>
       <i id="rangeOutMarker" class="range-marker range-out hidden">O</i>
-      <div class="track"><b>V1<span>Video</span></b><div id="videoTrack"></div></div>
-      <div class="track"><b>T<span>Texto</span></b><div id="textTrack"></div></div>
-      <div class="track"><b>G<span>Gráficos</span></b><div id="graphicTrack"></div></div>
+      <div class="track video-track overlay-track-row" data-track-row="v2"><div class="track-head"><strong>V2</strong><button data-track-control="lock" data-track="v2" title="Bloquear">🔒</button><button data-track-control="visible" data-track="v2" title="Visibilidad">◉</button><small>Overlays</small></div><div id="overlayTrack"></div></div>
+      <div class="track video-track" data-track-row="v1"><div class="track-head"><strong>V1</strong><button data-track-control="lock" data-track="v1" title="Bloquear">🔒</button><button data-track-control="visible" data-track="v1" title="Visibilidad">◉</button><small>Video</small></div><div id="videoTrack"></div></div>
+      <div class="track audio-track" data-track-row="a1"><div class="track-head"><strong>A1</strong><button data-track-control="lock" data-track="a1" title="Bloquear">🔒</button><button data-track-control="mute" data-track="a1" title="Mute">M</button><button data-track-control="solo" data-track="a1" title="Solo">S</button><small>Audio</small></div><div id="audioTrack"></div></div>
       <i id="playhead" class="playhead"></i>
     </div></div>
   </div>
@@ -122,10 +122,10 @@ $('#app').innerHTML=`
   </section>
   <section class="export-settings">
     <label class="export-name">Nombre<input id="exportName" value="export"></label>
-    <label>Resolución<select id="res"><option value="1920x1080">1080P · 1920 × 1080</option><option value="1280x720">720P · 1280 × 720</option><option value="1080x1080">Cuadrado · 1080 × 1080</option><option value="1080x1920">Vertical · 1080 × 1920</option><option value="3840x2160">4K · 3840 × 2160</option></select></label>
+    <label>Resolución<select id="res"><option value="timeline" selected>Timeline · usar resolución del proyecto</option><option value="1920x1080">1080P · 1920 × 1080</option><option value="1280x720">720P · 1280 × 720</option><option value="1080x1080">Cuadrado · 1080 × 1080</option><option value="1080x1920">Vertical · 1080 × 1920</option><option value="3840x2160">4K · 3840 × 2160</option></select></label>
     <label>Calidad<select id="quality"><option value="18">Alta</option><option selected value="23">Recomendada</option><option value="30">Ligera</option></select></label>
     <label>Formato<select id="format"><option value="mp4">MP4 · H.264</option><option value="webm">WebM · VP9</option><option value="mov">MOV · H.264</option><option value="mkv">MKV · H.264</option><option value="gif">GIF</option><option value="pngseq">Secuencia PNG</option><option value="jpgseq">Secuencia JPG</option></select></label>
-    <label>Cuadros por segundo<select id="fps"><option>24</option><option selected>30</option><option>60</option></select></label>
+    <label>Cuadros por segundo<select id="fps"><option value="timeline" selected>Timeline</option><option value="24">24</option><option value="30">30</option><option value="60">60</option></select></label>
     <div class="export-codec-row"><span>Espacio de color</span><b>Rec. 709 SDR</b></div>
     <div id="renderProgress" class="render-progress hidden"><div><span id="renderText">Preparando…</span><b id="renderPct">0%</b></div><i><em id="renderBar"></em></i></div>
   </section>
@@ -135,10 +135,34 @@ $('#app').innerHTML=`
   <div><button id="cancelExport" class="ghost">Cancelar</button><button id="renderBtn" class="render">Exportar</button></div>
 </div>
 </div></div>
+<div id="timelineSettings" class="drawer timeline-settings-drawer"><div class="timeline-settings-card">
+  <div class="export-titlebar"><strong>Timeline Settings</strong><button id="closeTimelineSettings" class="round">×</button></div>
+  <div class="timeline-settings-body">
+    <div class="settings-tabs"><button class="active">Formato</button><button disabled>Monitor</button><button disabled>Output</button><button disabled>Color</button></div>
+    <label class="settings-check"><input id="timelineAuto" type="checkbox" checked><span>Adaptar resolución al primer medio importado</span></label>
+    <label>Timeline Resolution
+      <select id="timelinePreset">
+        <option value="1920x1080">1920 × 1080 HD</option>
+        <option value="1080x1920">1080 × 1920 Vertical</option>
+        <option value="1280x720">1280 × 720 HD</option>
+        <option value="3840x2160">3840 × 2160 UHD</option>
+        <option value="1080x1080">1080 × 1080 Square</option>
+        <option value="custom">Personalizada</option>
+      </select>
+    </label>
+    <div class="twocol timeline-custom-size"><label>Ancho<input id="timelineWidth" type="number" min="16" step="2" value="1920"></label><label>Alto<input id="timelineHeight" type="number" min="16" step="2" value="1080"></label></div>
+    <label>Timeline Frame Rate<select id="timelineFps"><option value="23.976">23.976</option><option value="24">24</option><option value="25">25</option><option value="30" selected>30</option><option value="50">50</option><option value="60">60</option></select></label>
+    <label>Medios con resolución diferente
+      <select id="timelineMismatch"><option value="fit">Escalar imagen completa para encajar</option><option value="fill">Llenar el frame recortando</option><option value="stretch">Estirar al tamaño de timeline</option></select>
+    </label>
+    <div class="timeline-settings-summary" id="timelineSettingsSummary">1920 × 1080 · 30 fps</div>
+  </div>
+  <div class="export-footer"><span>La resolución de Timeline define el canvas de edición.</span><div><button id="cancelTimelineSettings" class="ghost">Cancelar</button><button id="applyTimelineSettings" class="render">OK</button></div></div>
+</div></div>
 <div id="toast" class="toast"></div>
 </div>`;
 
-const els={files:$('#files'),drop:$('#drop'),list:$('#mediaList'),loading:$('#loading'),loadBar:$('#loadBar'),loadPct:$('#loadPct'),loadText:$('#loadText'),empty:$('#empty'),screen:$('#screen'),sourceA:$('#sourceA'),sourceB:$('#sourceB'),video:$('#video'),videoB:$('#videoB'),gif:$('#gif'),gifB:$('#gifB'),layers:$('#layerPreview'),duration:$('#duration'),time:$('#time'),count:$('#clipCount'),ruler:$('#ruler'),vtrack:$('#videoTrack'),ttrack:$('#textTrack'),gtrack:$('#graphicTrack'),inner:$('#timelineInner'),playhead:$('#playhead'),inspector:$('#inspector'),inspectorTitle:$('#inspectorTitle'),drawer:$('#drawer'),renderProgress:$('#renderProgress'),renderText:$('#renderText'),renderPct:$('#renderPct'),renderBar:$('#renderBar'),renderBtn:$('#renderBtn'),summary:$('#exportSummary'),previewMsg:$('#previewMsg'),exportPreview:$('#exportPreview'),exportPreviewGif:$('#exportPreviewGif'),mediaView:$('#mediaView'),shapeView:$('#shapeView'),transitionView:$('#transitionView'),giphyView:$('#giphyView'),giphyResults:$('#giphyResults'),rangeShade:$('#rangeShade'),rangeInMarker:$('#rangeInMarker'),rangeOutMarker:$('#rangeOutMarker'),rangeLabel:$('#rangeLabel'),transformBox:$('#transformBox'),zoomValue:$('#zoomValue')};
+const els={files:$('#files'),drop:$('#drop'),list:$('#mediaList'),loading:$('#loading'),loadBar:$('#loadBar'),loadPct:$('#loadPct'),loadText:$('#loadText'),empty:$('#empty'),screen:$('#screen'),sourceA:$('#sourceA'),sourceB:$('#sourceB'),video:$('#video'),videoB:$('#videoB'),gif:$('#gif'),gifB:$('#gifB'),layers:$('#layerPreview'),duration:$('#duration'),time:$('#time'),count:$('#clipCount'),ruler:$('#ruler'),vtrack:$('#videoTrack'),ttrack:$('#textTrack'),gtrack:$('#graphicTrack'),inner:$('#timelineInner'),playhead:$('#playhead'),inspector:$('#inspector'),inspectorTitle:$('#inspectorTitle'),drawer:$('#drawer'),renderProgress:$('#renderProgress'),renderText:$('#renderText'),renderPct:$('#renderPct'),renderBar:$('#renderBar'),renderBtn:$('#renderBtn'),summary:$('#exportSummary'),previewMsg:$('#previewMsg'),exportPreview:$('#exportPreview'),exportPreviewGif:$('#exportPreviewGif'),mediaView:$('#mediaView'),shapeView:$('#shapeView'),transitionView:$('#transitionView'),giphyView:$('#giphyView'),giphyResults:$('#giphyResults'),rangeShade:$('#rangeShade'),rangeInMarker:$('#rangeInMarker'),rangeOutMarker:$('#rangeOutMarker'),rangeLabel:$('#rangeLabel'),transformBox:$('#transformBox'),zoomValue:$('#zoomValue'),overlayTrack:$('#overlayTrack'),atrack:$('#audioTrack'),timelineSettings:$('#timelineSettings')};
 
 const workspace=$('.workspace');
 function applySavedPanelLayout(){try{const v=JSON.parse(localStorage.getItem('exportToVideo:layout')||'{}');if(Number.isFinite(v.media))workspace.style.setProperty('--media-w',v.media+'px');if(Number.isFinite(v.inspector))workspace.style.setProperty('--inspector-w',v.inspector+'px');if(Number.isFinite(v.timeline))workspace.style.setProperty('--timeline-h',v.timeline+'px')}catch{}}
