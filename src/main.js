@@ -59,7 +59,10 @@ $('#app').innerHTML=`
   <div id="giphyView" class="asset-view hidden">
     <div class="giphy-search"><input id="giphyQuery" placeholder="Buscar GIF en GIPHY"><button id="giphySearch">Buscar</button></div>
     <div class="giphy-key-row"><input id="giphyKey" type="password" placeholder="GIPHY API key"><button id="saveGiphyKey">Guardar</button></div>
-    <small class="giphy-help">La clave se guarda solo en este navegador.</small>
+    <div class="giphy-meta">
+      <small class="giphy-help">La clave se guarda solo en este navegador.</small>
+      <a class="giphy-credit" href="https://giphy.com/" target="_blank" rel="noopener noreferrer" aria-label="Powered by GIPHY"><span>Powered by</span><strong>GIPHY</strong></a>
+    </div>
     <div id="giphyResults" class="giphy-results"><p class="muted centertext">Busca un GIF para añadirlo al proyecto.</p></div>
   </div>
   <div class="add-layer"><button data-add="text">T<small>Texto</small></button><button data-add="shape">□<small>Forma</small></button><button data-add="solid">■<small>Sólido</small></button></div>
