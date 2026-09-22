@@ -651,11 +651,11 @@ body.resize-row,body.resize-row *{cursor:row-resize!important}
 }
 .quick-fade-region-in{
   left:0;background:linear-gradient(90deg,#05090bcc,#35d7d214);
-  clip-path:polygon(0 0,100% 0,100% 100%)
+  clip-path:polygon(0 100%,100% 0,100% 100%)
 }
 .quick-fade-region-out{
   right:0;background:linear-gradient(270deg,#05090bcc,#35d7d214);
-  clip-path:polygon(0 0,100% 0,0 100%)
+  clip-path:polygon(0 0,100% 100%,0 100%)
 }
 .quick-fade-handle{
   position:absolute;top:1px;z-index:12;width:10px;height:10px;margin-left:-5px;
