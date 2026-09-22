@@ -11,7 +11,7 @@ const fmt=s=>{s=Math.max(0,Number(s)||0);return `${String(Math.floor(s/60)).padS
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=p=>`${p}_${crypto.randomUUID().slice(0,8)}`;
 const GIPHY_BUILTIN_KEY=(import.meta.env.VITE_GIPHY_API_KEY||'').trim();
-const state={clips:[],layers:[],selected:null,time:0,playing:false,raf:0,started:0,width:1920,height:1080,fps:30,timelineAuto:true,verticalResolution:false,mismatchMode:'fit',trackHeight:'normal',trackStates:{v1:{locked:false,visible:true},v2:{locked:false,visible:true},v3:{locked:false,visible:true},a1:{locked:false,muted:false,solo:false},a2:{locked:false,muted:false,solo:false}},format:'mp4',quality:23,exportResolution:'timeline',exportFps:null,busy:false,dragClipId:null,proxyBusy:new Set(),rangeIn:0,rangeOut:null,mediaView:'media',giphyQuery:'',giphyBusy:false,giphyMode:'trending',giphyType:'gifs',giphyOffset:0,giphyHasMore:true};
+const state={clips:[],layers:[],selected:null,time:0,playing:false,raf:0,started:0,width:1920,height:1080,fps:30,timelineAuto:true,verticalResolution:false,mismatchMode:'fit',trackHeight:'normal',trackStates:{v1:{locked:false,visible:true},v2:{locked:false,visible:true},a1:{locked:false,muted:false,solo:false},a2:{locked:false,muted:false,solo:false}},timelineSnap:true,canvasSnap:true,initialMediaPlaced:false,waveformBusy:new Set(),format:'mp4',quality:23,exportResolution:'timeline',exportFps:null,busy:false,dragClipId:null,proxyBusy:new Set(),rangeIn:0,rangeOut:null,mediaView:'media',giphyQuery:'',giphyBusy:false,giphyMode:'trending',giphyType:'gifs',giphyOffset:0,giphyHasMore:true};
 let ff=null,ffReady=false,ffLoading=null,progressPhase={start:0,span:1};
 
 $('#app').innerHTML=`
@@ -93,6 +93,8 @@ $('#app').innerHTML=`
         <button id="markInBtn" title="Marcar entrada (I)">I <span>Entrada</span></button>
         <button id="markOutBtn" title="Marcar salida (O)">O <span>Salida</span></button>
         <button id="clearRangeBtn" title="Limpiar rango">× <span>Rango</span></button>
+        <button id="timelineSnapBtn" class="active" title="Magnetismo de Timeline">🧲 <span>Timeline</span></button>
+        <button id="canvasSnapBtn" class="active" title="Magnetismo de Canvas">✥ <span>Canvas</span></button>
         <b id="rangeLabel">Todo</b>
       </div>
       <div class="track-density"><select id="trackHeightMode" title="Altura de pistas"><option value="compact">Compacta</option><option value="normal" selected>Normal</option><option value="large">Grande</option></select></div><div class="timeline-zoom"><button id="zoomOut" title="Alejar">−</button><input id="zoom" type="range" min="20" max="800" step="10" value="100"><button id="zoomIn" title="Acercar">＋</button><button id="zoomFit" title="Ver todo">↔</button><span id="zoomValue">100%</span></div>
@@ -102,11 +104,7 @@ $('#app').innerHTML=`
       <div id="rangeShade" class="range-shade hidden"></div>
       <i id="rangeInMarker" class="range-marker range-in hidden">I</i>
       <i id="rangeOutMarker" class="range-marker range-out hidden">O</i>
-      <div class="track video-track" data-track-row="v3"><div class="track-head"><strong>V3</strong><button data-track-control="lock" data-track="v3" title="Bloquear">🔒</button><button data-track-control="visible" data-track="v3" title="Visibilidad">◉</button><small>Medios</small></div><div id="videoTrack3"></div></div>
-      <div class="track video-track" data-track-row="v2"><div class="track-head"><strong>V2</strong><button data-track-control="lock" data-track="v2" title="Bloquear">🔒</button><button data-track-control="visible" data-track="v2" title="Visibilidad">◉</button><small>Medios</small></div><div id="videoTrack2"></div></div>
-      <div class="track video-track" data-track-row="v1"><div class="track-head"><strong>V1</strong><button data-track-control="lock" data-track="v1" title="Bloquear">🔒</button><button data-track-control="visible" data-track="v1" title="Visibilidad">◉</button><small>Medios</small></div><div id="videoTrack1"></div></div>
-      <div class="track audio-track" data-track-row="a1"><div class="track-head"><strong>A1</strong><button data-track-control="lock" data-track="a1" title="Bloquear">🔒</button><button data-track-control="mute" data-track="a1" title="Mute">M</button><button data-track-control="solo" data-track="a1" title="Solo">S</button><small>Audio</small></div><div id="audioTrack1"></div></div>
-      <div class="track audio-track" data-track-row="a2"><div class="track-head"><strong>A2</strong><button data-track-control="lock" data-track="a2" title="Bloquear">🔒</button><button data-track-control="mute" data-track="a2" title="Mute">M</button><button data-track-control="solo" data-track="a2" title="Solo">S</button><small>Audio</small></div><div id="audioTrack2"></div></div>
+      <div id="trackRows"></div>
       <i id="playhead" class="playhead"></i>
     </div></div>
   </div>
