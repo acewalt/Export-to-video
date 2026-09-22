@@ -608,3 +608,31 @@ body.resize-col,body.resize-col *{cursor:col-resize!important}
 body.resize-row,body.resize-row *{cursor:row-resize!important}
 .preview-source{overflow:visible}
 .preview-source video,.preview-source img{object-fit:contain!important}
+
+
+/* DaVinci-style quick fade handles */
+.quick-fade-region{
+  position:absolute;top:0;bottom:0;z-index:2;pointer-events:none;opacity:0;
+  transition:opacity .12s
+}
+.quick-fade-region-in{
+  left:0;background:linear-gradient(90deg,#05090bcc,#35d7d214);
+  clip-path:polygon(0 0,100% 100%,0 100%)
+}
+.quick-fade-region-out{
+  right:0;background:linear-gradient(270deg,#05090bcc,#35d7d214);
+  clip-path:polygon(100% 0,100% 100%,0 100%)
+}
+.quick-fade-handle{
+  position:absolute;top:1px;z-index:12;width:10px;height:10px;margin-left:-5px;
+  border:1px solid #0a0d0f;border-radius:2px;background:#f4f7f8;
+  box-shadow:0 0 0 1px #ffffff44;cursor:ew-resize;opacity:0;
+  pointer-events:auto;transition:opacity .12s,transform .08s
+}
+.quick-fade-out{margin-left:0;margin-right:-5px}
+.video-item:hover .quick-fade-handle,.video-item.selected .quick-fade-handle,
+.video-item:hover .quick-fade-region,.video-item.selected .quick-fade-region{opacity:1}
+.quick-fade-handle:hover{transform:scale(1.22);background:var(--accent)}
+.video-item.selected .quick-fade-handle{background:#fff}
+.video-item.selected .quick-fade-handle:hover{background:var(--accent)}
+.fade-help{display:block;color:#617076;font-size:7px;line-height:1.45;margin-top:6px}
